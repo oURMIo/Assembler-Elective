@@ -1,0 +1,49 @@
+.text
+.global _start
+_start:
+	LDR R0,=0xFFFEC600
+	LDR R5,=0x2FAF080
+	LDR R11, SEV
+	
+
+	STR R5,[R0]
+	MOV R10,#0
+	MOV R6,#3
+	STR R6,[R0,#8]
+
+LOOB:	MOV R2,#0
+	LDR R1,=MAS
+LOOC:	MOV R12,#0	
+	LDR R8,=MAS	
+LOOP:	LDR R6,[R0,#12]
+	MOV R7,#1
+	CMP R6,R7
+	BNE LOOP
+
+	STR R7,[R0,#12]
+
+	LDR R9,[R8],#4
+
+	ADD R12,R12,#1
+	CMP R12,#11
+	BEQ LOOA
+	B VID
+
+LOOA:	ADD R2,R2,#1
+	CMP R2,#10
+	BEQ LOOB
+
+	LDR R3,[R1],#4
+	LSL R3,R3,#8
+	ORR R9,R9,R3
+	STR R9,[R11]	
+	B LOOC
+
+VID:	ORR R9,R9,R3
+	STR R9,[R11]	
+	B LOOP
+
+
+SEV: .word 0xff200020
+MAS: .word 0x3F, 0x6, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x7, 0x7F, 0x6F, 0
+.end

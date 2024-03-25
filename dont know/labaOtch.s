@@ -1,0 +1,51 @@
+.text
+.global _start
+_start:
+	LDR R0,=0xFFFEC600	//adres_time
+	LDR R1,=0xBEBC200	//time
+	LDR R2, SVET
+	LDR R4,KNOP	
+
+	STR R1,[R0]
+	MOV R11,#3
+	STR R11,[R0,#8]
+	
+	MOVW R6,#0
+	MOV R8,#0xF
+
+OBNOL:	LDR R3,=MAS
+	MOV R10,#0
+
+LOOP:	LDR R12,[R0,#12]	//timer
+	MOV R11,#1
+	CMP R12,R11
+	BNE LOOP
+	STR R11,[R0,#12]
+
+	STR R6,[R2]	
+	LDR R9,[R3],#4	//INPUT NEXT EL FROM MAS
+	LSL R6,R6,#8
+	ORR R6,R6,R9
+	ADD R10,R10,#1
+
+STOP:	LDR R5,[R4]
+	TST R5,#4
+	STR R8,[R4,#0xC]
+	BNE NACH
+
+	CMP R10,#8
+	BNE LOOP
+
+	B OBNOL
+
+NACH:	LDR R5,[R4]
+	TST R5,#2
+	STR R8,[R4,#0xC]
+	BNE LOOP
+	
+	B NACH
+
+SVET: .word 0xff200020
+MAS: .word 0x76, 0x79, 0x6E, 0x40, 0x5E, 0x77, 0x6E, 0x08
+KNOP: .word 0xFF200050
+.end

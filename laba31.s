@@ -1,0 +1,52 @@
+.text
+.global _start
+_start: LDR R0,ADR
+	LDR R1,[R0]
+	LDR R2,SEC
+	MOV R4,#13
+	MOV R5,#11
+	MOV R6,#15
+	MOV R7,#9
+
+	
+	TST R1,R6
+	BEQ NEX
+
+	TST R1,R4
+	BEQ CHES
+
+	TST R1,R5
+	BEQ FIS
+	
+	TST R1,R7
+	BEQ BU
+
+	B NEX
+
+CHES:	MOVW R3,0x0673
+	MOVT R3,0x397C
+	STR R3,[R2]
+
+	B _start
+
+FIS:	MOVW R3,0x6D76
+	MOVT R3,0x7105
+	STR R3,[R2]
+
+	B _start	
+
+NEX:	MOV R3,#0
+	STR R3,[R2]
+
+	B _start
+
+BU:	MOVW R3,0xFFFF
+	MOVT R3,0xFFFF
+	STR R3,[R2]
+
+	B _start
+
+ADR: .word 0xFF200050
+SEC: .word 0xFF200020
+.end
+
